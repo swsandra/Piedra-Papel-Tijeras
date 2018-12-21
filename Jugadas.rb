@@ -70,4 +70,5 @@ jugada = Piedra.new
 puts " #{jugada} "
 puts " #{jugada.pierde} "
 puts "#{jugada.puntos(Spock.new)}"
+puts "#{!(jugada.is_a? Jugada)}"
 =end
