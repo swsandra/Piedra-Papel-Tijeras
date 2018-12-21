@@ -240,7 +240,12 @@ class Pensar < Estrategia
 	end
 
 	def to_s
-		str="#{self.class.name} con configuracion:\n Conteo de jugadas del oponente:\n"
+		str="#{self.class.name} con configuracion:"
+		if @piedras==0 && @papeles==0 && @tijeras==0 && @lagartos==0 && @spocks==0
+			str.concat"\n No existe un conteo de jugadas anteriores del oponente.\n"
+			return str
+		end
+		str.concat"\n Conteo de jugadas del oponente:\n"
 		if @piedras!=0
 			if @piedras>1
 				str.concat"\tPiedra: #{@piedras} veces.\n"
@@ -279,13 +284,21 @@ class Pensar < Estrategia
 		return str
 	end
 
+	def reset
+		@piedras=0
+		@papeles=0
+		@tijeras=0
+		@lagartos=0
+		@spocks=0
+	end
+
 end
 
 =begin
 #PRUEBA MANUAL
 manual = Manual.new
 manual.prox(Jugada.new)
-
+puts "#{manual}"
 
 #PRUEBA UNIFORME
 uni = Uniforme.new([:Piedra, :Piedra, :Papel, :Tijera, :Tijera])
@@ -303,7 +316,7 @@ for i in 0...ses.sum
 	puts "jugada #{i} #{ses.prox(jugada)}"
 end
 puts "#{ses}"
-=end
+
 #PRUEBA COPIAR
 jugada = Piedra.new
 cop = Copiar.new(Piedra.new)
@@ -318,7 +331,7 @@ puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
 puts "#{cop}"
 cop.reset
 puts "#{cop}"
-=begin
+=end
 #PRUEBA PENSAR
 pen = Pensar.new
 puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
@@ -327,4 +340,5 @@ puts "op jugo Piedra, jugada #{pen.prox(Piedra.new)}"
 puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
 puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
 puts "#{pen}"
-=end
+pen.reset
+puts "#{pen}"
