@@ -90,30 +90,40 @@ class Uniforme < Estrategia
 
 end
 
-#ESTE LINK PUEDE SER PARA SESGADA
-#https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
 class Sesgada < Estrategia
 
-	attr_reader :total, :jugadas
+	attr_reader :jugadas, :intervals, :sum
 
 	#No estoy clara si esto sirve
 	def initialize(moves)
+		@intervals=Hash.new
 		if moves.length > 0
 			moves.each do |mov, prob| #key, value
 				if !(mov.is_a? Symbol) || !([:Piedra, :Papel, :Tijera, :Lagarto, :Spock].include? mov)
 					raise "Alguna jugada del mapa no es valida"
 				end
-				@total += prob
 			end
 		else
 			raise "No existen jugadas en el mapa"
 		end
-		@jugadas = moves.uniq#{|mov, prob| [mov.class]}
-	end
+		@jugadas = moves #No hace falta hacer uniq, el hash automaticamente toma el ultimo valor
+		@sum=0
+		@jugadas.each do |jug, prob|
+			@sum+=prob
+			@intervals[jug] = @sum
+		end
 
+	end
+	#Using this approach https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
 	def prox(j)
 		if j.is_a? Jugada
-			#ver el link
+			n=rand(@sum)
+			puts "n was #{n}"
+			@intervals.each do |jug,prob|
+				if prob>n
+					return sym_to_class(jug)
+				end
+			end
 		else
 			raise "Jugada suministrada invalida"
 		end
@@ -122,13 +132,23 @@ class Sesgada < Estrategia
 end
 
 =begin
+#PRUEBA MANUAL
 manual = Manual.new
 manual.prox(Jugada.new)
-=end
+
+#PRUEBA UNIFORME
 uni = Uniforme.new([:Piedra, :Piedra, :Papel, :Tijera, :Tijera])
 #uni1 = Uniforme.new([]) da error
 puts "#{uni.jugadas}"
 proximaj = uni.prox(Jugada.new)
 puts "proximaj #{proximaj} clase #{proximaj.class}"
 
-#ses = Sesgada.new()
+#PRUEBA SESGADA
+ses = Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})
+puts "ses #{ses.jugadas}, sum #{ses.sum}, intervals #{ses.intervals}"
+jugada = Jugada.new
+for i in 0...ses.sum
+	puts "jugada #{i} #{ses.prox(jugada)}"
+end
+=end
+#PRUEBA COPIAR
