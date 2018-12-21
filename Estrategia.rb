@@ -10,7 +10,7 @@ class Estrategia
 		"#{self.class.name}"
 	end
 
-	# ESPECIALIZAR LOS RESET Y TO_S
+	# ESPECIALIZAR LOS RESET
 
 	def sym_to_class(sym)
 		if sym==:Piedra
@@ -167,7 +167,7 @@ class Copiar < Estrategia
 	def prox(j) #j es la jugada anterior del oponente, si se llama de primero j debe ser nil
 		if j.is_a? Jugada
 			if @jugadaAnterior == nil
-				@jugar, @jugadaAnterior = @jugadaAnterior, j
+				@jugadaAnterior = j
 				return @primera
 			else
 				@jugar, @jugadaAnterior = @jugadaAnterior, j
@@ -179,7 +179,15 @@ class Copiar < Estrategia
 	end
 
 	def to_s
-		"#{self.class.name} con configuracion:\n Jugada copiada: #{@jugadaAnterior}\n"
+		if @jugadaAnterior!=nil
+			"#{self.class.name} con configuracion:\n Jugada inicial: #{@primera}\n Jugada copiada: #{@jugadaAnterior}\n"
+		else 
+			"#{self.class.name} con configuracion:\n Jugada inicial: #{@primera}\n Jugada copiada: ninguna\n"
+		end
+	end
+
+	def reset
+		@jugadaAnterior=nil #No hace falta resetear la otra
 	end
 
 end
@@ -295,7 +303,7 @@ for i in 0...ses.sum
 	puts "jugada #{i} #{ses.prox(jugada)}"
 end
 puts "#{ses}"
-
+=end
 #PRUEBA COPIAR
 jugada = Piedra.new
 cop = Copiar.new(Piedra.new)
@@ -308,8 +316,9 @@ jugada = Lagarto.new
 puts "jugada #{cop.prox(jugada)} y op jugo lagarto"
 puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
 puts "#{cop}"
-=end
-
+cop.reset
+puts "#{cop}"
+=begin
 #PRUEBA PENSAR
 pen = Pensar.new
 puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
@@ -318,3 +327,4 @@ puts "op jugo Piedra, jugada #{pen.prox(Piedra.new)}"
 puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
 puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
 puts "#{pen}"
+=end
