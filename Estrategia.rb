@@ -78,13 +78,43 @@ end
 
 #ESTE LINK PUEDE SER PARA SESGADA
 #https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
+class Sesgada < Estrategia
 
+	attr_reader :total, :jugadas
+
+	#No estoy clara si esto sirve
+	def initialize(moves)
+		if moves.length > 0
+			moves.each do |mov, prob| #key, value
+				if !(mov.is_a? Jugada) 
+					raise "Alguna jugada del mapa no es valida"
+				end
+				@total += prob
+			end
+		else
+			raise "No existen jugadas en el mapa"
+		end
+		@jugadas = moves.uniq{|mov, prob| [mov.class]}
+	end
+
+	def prox(j)
+		if j.is_a? Jugada
+			#ver el link
+		else
+			raise "Jugada suministrada invalida"
+		end
+	end
+
+end
 
 =begin
 manual = Manual.new
 manual.prox(Jugada.new)
-=end
+
 uni = Uniforme.new([Piedra.new, Piedra.new, Papel.new, Tijera.new, Tijera.new])
 #uni1 = Uniforme.new([]) da error
 puts "#{uni.jugadas}"
 puts "#{uni.prox(Jugada.new)}"
+=end
+
+#ses = Sesgada.new()
