@@ -131,7 +131,7 @@ class Sesgada < Estrategia
 
 end
 
-class Copiar
+class Copiar < Estrategia
 
 	attr_reader :primera, :jugadaAnterior
 
@@ -163,7 +163,7 @@ class Copiar
 
 end
 
-class Pensar
+class Pensar < Estrategia
 
 	attr_reader :piedras, :papeles, :tijeras, :lagartos, :spocks
 
@@ -190,6 +190,20 @@ class Pensar
 				@spocks+=1
 			end
 			#Generate random number
+			random = @@r.rand(@piedras+@papeles+@tijeras+@lagartos+@spocks)
+			puts "random was #{random} "
+			case random
+			when 0...@piedras
+				return Piedra.new
+			when @piedras...@piedras+@papeles
+				return Papel.new
+			when @piedras+@papeles...@piedras+@papeles+@tijeras
+				return Tijera.new
+			when @piedras+@papeles+@tijeras...@piedras+@papeles+@tijeras+@lagartos
+				return Lagarto.new
+			when @piedras+@papeles+@tijeras+@lagartos...@piedras+@papeles+@tijeras+@lagartos+@spocks
+				return Spock.new
+			end
 
 		else
 			raise "Jugada suministrada invalida"
@@ -233,4 +247,8 @@ puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
 
 #PRUEBA PENSAR
 pen = Pensar.new
-pen.prox(Piedra.new)
+puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
+puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
+puts "op jugo Piedra, jugada #{pen.prox(Piedra.new)}"
+puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
+puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
