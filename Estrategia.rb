@@ -88,6 +88,14 @@ class Uniforme < Estrategia
 		end
 	end
 
+	def to_s
+		str="#{self.class.name} con configuracion:\n Jugadas posibles:"
+		@jugadas.each do |j|
+			str.concat" #{j},"
+		end
+		return str[0...str.length-1].concat "."
+	end
+
 end
 
 class Sesgada < Estrategia
@@ -114,6 +122,7 @@ class Sesgada < Estrategia
 		end
 
 	end
+	
 	#Using this approach (second solution) https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
 	def prox(j)
 		if j.is_a? Jugada
@@ -127,6 +136,14 @@ class Sesgada < Estrategia
 		else
 			raise "Jugada suministrada invalida"
 		end
+	end
+
+	def to_s
+		str="#{self.class.name} con configuracion:\n Jugadas posibles:\n"
+		@jugadas.each do |j, p|
+			str.concat"\t#{j} con probabilidad #{p/(@sum*1.0)}.\n"
+		end
+		return str
 	end
 
 end
@@ -159,6 +176,10 @@ class Copiar < Estrategia
 		else
 			raise "Jugada suministrada invalida"
 		end
+	end
+
+	def to_s
+		"#{self.class.name} con configuracion:\n Jugada copiada: #{@jugadaAnterior}\n"
 	end
 
 end
@@ -210,6 +231,46 @@ class Pensar < Estrategia
 		end
 	end
 
+	def to_s
+		str="#{self.class.name} con configuracion:\n Conteo de jugadas del oponente:\n"
+		if @piedras!=0
+			if @piedras>1
+				str.concat"\tPiedra: #{@piedras} veces.\n"
+			else
+				str.concat"\tPiedra: #{@piedras} vez.\n"
+			end
+		end
+		if @papeles!=0
+			if @papeles>1
+				str.concat"\tPapel: #{@papeles} veces.\n"
+			else
+				str.concat"\tPapel: #{@papeles} vez.\n"
+			end
+		end
+		if @tijeras!=0
+			if @tijeras>1
+				str.concat"\tTijera: #{@tijeras} veces.\n"
+			else
+				str.concat"\tTijera: #{@tijeras} vez.\n"
+			end
+		end
+		if @lagartos!=0
+			if @lagartos>1
+				str.concat"\tLagarto: #{@lagartos} veces.\n"
+			else
+				str.concat"\tLagarto: #{@lagartos} vez.\n"
+			end
+		end
+		if @spocks!=0
+			if @spocks>1
+				str.concat"\tSpock: #{@spocks} veces.\n"
+			else 
+				str.concat"\tSpock: #{@spocks} vez.\n"
+			end
+		end
+		return str
+	end
+
 end
 
 =begin
@@ -217,12 +278,14 @@ end
 manual = Manual.new
 manual.prox(Jugada.new)
 
+
 #PRUEBA UNIFORME
 uni = Uniforme.new([:Piedra, :Piedra, :Papel, :Tijera, :Tijera])
 #uni1 = Uniforme.new([]) da error
 puts "#{uni.jugadas}"
 proximaj = uni.prox(Jugada.new)
 puts "proximaj #{proximaj} clase #{proximaj.class}"
+puts " #{uni} "
 
 #PRUEBA SESGADA
 ses = Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})
@@ -231,6 +294,7 @@ jugada = Jugada.new
 for i in 0...ses.sum
 	puts "jugada #{i} #{ses.prox(jugada)}"
 end
+puts "#{ses}"
 
 #PRUEBA COPIAR
 jugada = Piedra.new
@@ -243,6 +307,7 @@ puts "jugada #{cop.prox(jugada)} y op jugo papel"
 jugada = Lagarto.new
 puts "jugada #{cop.prox(jugada)} y op jugo lagarto"
 puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
+puts "#{cop}"
 =end
 
 #PRUEBA PENSAR
@@ -252,3 +317,4 @@ puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
 puts "op jugo Piedra, jugada #{pen.prox(Piedra.new)}"
 puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
 puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
+puts "#{pen}"
