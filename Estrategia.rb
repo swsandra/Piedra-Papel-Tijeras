@@ -3,15 +3,14 @@ require 'io/console'
 
 class Estrategia
 
-	# Esta funcion se debe especializar
-	#luego para mostrar los parametros
-	#de confg de cada estrategia
+	@@r = Random.new(42) #With this seed it generates the same numbers for Sesgada.prox
+	#@@r = Random.new
+
 	def to_s
 		"#{self.class.name}"
 	end
-	
-	# No estoy clara si prox y reset
-	#se definen aqui igual
+
+	# ESPECIALIZAR LOS RESET Y TO_S
 
 	def sym_to_class(sym)
 		if sym==:Piedra
@@ -83,7 +82,7 @@ class Uniforme < Estrategia
 
 	def prox(j)
 		if j.is_a? Jugada
-			return sym_to_class(@jugadas[rand(@jugadas.length)])
+			return sym_to_class(@jugadas[@@r.rand(@jugadas.length)])
 		else
 			raise "Jugada suministrada invalida"
 		end
@@ -118,7 +117,7 @@ class Sesgada < Estrategia
 	#Using this approach (second solution) https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
 	def prox(j)
 		if j.is_a? Jugada
-			n=rand(@sum)
+			n=@@r.rand(@sum)
 			puts "n was #{n}"
 			@intervals.each do |jug,prob|
 				if prob>n
@@ -179,11 +178,19 @@ class Pensar
 
 	def prox(j) #j es la jugada anterior del op
 		if j.is_a? Jugada
-			if @jugadaAnterior == nil
-				return @primera
-			else
-				return @jugadaAnterior
+			if j.class == Piedra
+				@piedras+=1
+			elsif j.class == Papel
+				@papeles+=1
+			elsif j.class == Tijera
+				@tijeras+=1
+			elsif j.class == Lagarto
+				@lagartos+=1
+			elsif j.class == Spock
+				@spocks+=1
 			end
+			#Generate random number
+
 		else
 			raise "Jugada suministrada invalida"
 		end
@@ -210,7 +217,7 @@ jugada = Jugada.new
 for i in 0...ses.sum
 	puts "jugada #{i} #{ses.prox(jugada)}"
 end
-=end
+
 #PRUEBA COPIAR
 jugada = Piedra.new
 cop = Copiar.new(Piedra.new)
@@ -222,6 +229,8 @@ puts "jugada #{cop.prox(jugada)} y op jugo papel"
 jugada = Lagarto.new
 puts "jugada #{cop.prox(jugada)} y op jugo lagarto"
 puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
-
+=end
 
 #PRUEBA PENSAR
+pen = Pensar.new
+pen.prox(Piedra.new)
