@@ -13,6 +13,20 @@ class Estrategia
 	# No estoy clara si prox y reset
 	#se definen aqui igual
 
+	def sym_to_class(sym)
+		if sym==:Piedra
+			return Piedra.new
+		elsif sym==:Papel
+			return Papel.new
+		elsif sym==:Tijera
+			return Tijera.new
+		elsif sym==:Lagarto
+			return Lagarto.new
+		elsif sym==:Spock
+			return Spock.new
+		end
+	end
+
 end
 
 class Manual < Estrategia
@@ -56,19 +70,19 @@ class Uniforme < Estrategia
 	def initialize(moves)
 		if moves.length > 0
 			moves.each do |mov|
-				if !(mov.is_a? Jugada) 
+				if !(mov.is_a? Symbol) || !([:Piedra, :Papel, :Tijera, :Lagarto, :Spock].include? mov)
 					raise "Alguna jugada de la lista no es valida"
 				end
 			end
 		else
 			raise "No existen jugadas en la lista"
 		end
-		@jugadas = moves.uniq{|mov| [mov.class]}
+		@jugadas = moves.uniq#{|mov| [mov.class]} #esto es cuando son instancias
 	end
 
 	def prox(j)
 		if j.is_a? Jugada
-			return @jugadas[rand(@jugadas.length)]
+			return sym_to_class(@jugadas[rand(@jugadas.length)])
 		else
 			raise "Jugada suministrada invalida"
 		end
@@ -86,7 +100,7 @@ class Sesgada < Estrategia
 	def initialize(moves)
 		if moves.length > 0
 			moves.each do |mov, prob| #key, value
-				if !(mov.is_a? Jugada) 
+				if !(mov.is_a? Symbol) || !([:Piedra, :Papel, :Tijera, :Lagarto, :Spock].include? mov)
 					raise "Alguna jugada del mapa no es valida"
 				end
 				@total += prob
@@ -94,7 +108,7 @@ class Sesgada < Estrategia
 		else
 			raise "No existen jugadas en el mapa"
 		end
-		@jugadas = moves.uniq{|mov, prob| [mov.class]}
+		@jugadas = moves.uniq#{|mov, prob| [mov.class]}
 	end
 
 	def prox(j)
@@ -110,11 +124,11 @@ end
 =begin
 manual = Manual.new
 manual.prox(Jugada.new)
-
-uni = Uniforme.new([Piedra.new, Piedra.new, Papel.new, Tijera.new, Tijera.new])
+=end
+uni = Uniforme.new([:Piedra, :Piedra, :Papel, :Tijera, :Tijera])
 #uni1 = Uniforme.new([]) da error
 puts "#{uni.jugadas}"
-puts "#{uni.prox(Jugada.new)}"
-=end
+proximaj = uni.prox(Jugada.new)
+puts "proximaj #{proximaj} clase #{proximaj.class}"
 
 #ses = Sesgada.new()
