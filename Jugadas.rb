@@ -7,9 +7,18 @@ class Jugada
 		"#{self.class.name}"
 	end
 
-	def puntos(jugada)
-		#self.class.pierde.include? j.class.name
-		#self.class == j.class
+	def puntos(j)
+		if j.is_a? Jugada
+			if self.class ==  j.class
+				return [0, 0]
+			elsif self.pierde.include? j.class.name
+				return [0, 1]
+			else
+				return [1, 0]
+			end
+		else
+			puts "Jugada invalida"
+		end
 	end
 
 	attr_reader :pierde #accessor (getter and setter)
@@ -56,7 +65,9 @@ class Spock < Jugada
 
 end
 
+=begin
 jugada = Piedra.new
 puts " #{jugada} "
 puts " #{jugada.pierde} "
-puts "#{jugada.class==Piedra}" # .is_a?
+puts "#{jugada.puntos(Spock.new)}"
+=end
