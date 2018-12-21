@@ -41,7 +41,7 @@ class Manual < Estrategia
 				return Spock.new
 			end
 		else
-			puts "Jugada suministrada invalida"
+			raise "Jugada suministrada invalida"
 		end
 	
 	end
@@ -50,24 +50,41 @@ end
 
 class Uniforme < Estrategia
 
+	attr_reader :jugadas
+
 	#Esta distr, la prob es de 1/n para c/movimiento
 	def initialize(moves)
-		moves.each do |mov|
-			if !(mov.is_a? Jugada) 
-				raise "No existen alguna jugada valida en la lista"
+		if moves.length > 0
+			moves.each do |mov|
+				if !(mov.is_a? Jugada) 
+					raise "Alguna jugada de la lista no es valida"
+				end
 			end
+		else
+			raise "No existen jugadas en la lista"
 		end
 		@jugadas = moves.uniq{|mov| [mov.class]}
 	end
 
-	attr_reader :jugadas
+	def prox(j)
+		if j.is_a? Jugada
+			return @jugadas[rand(@jugadas.length)]
+		else
+			raise "Jugada suministrada invalida"
+		end
+	end
 
 end
+
+#ESTE LINK PUEDE SER PARA SESGADA
+#https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
 
 
 =begin
 manual = Manual.new
 manual.prox(Jugada.new)
 =end
-uni = Uniforme.new([Piedra.new, Piedra.new, Papel.new])
+uni = Uniforme.new([Piedra.new, Piedra.new, Papel.new, Tijera.new, Tijera.new])
+#uni1 = Uniforme.new([]) da error
 puts "#{uni.jugadas}"
+puts "#{uni.prox(Jugada.new)}"

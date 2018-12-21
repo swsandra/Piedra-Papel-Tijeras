@@ -1,5 +1,7 @@
 #Clase que representa una jugada
 class Jugada
+
+	attr_reader :pierde #accessor (getter and setter)
 	
 	@pierde=[]
 
@@ -20,9 +22,6 @@ class Jugada
 			puts "Jugada invalida"
 		end
 	end
-
-	attr_reader :pierde #accessor (getter and setter)
-
 end
 
 class Piedra < Jugada
