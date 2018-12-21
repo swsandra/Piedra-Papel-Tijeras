@@ -138,6 +138,8 @@ class Copiar
 
 	@jugadaAnterior #No me parece necesario tomar en cuenta todas las jugadas anteriores
 	@primera
+	@jugar #Siguiente a jugar
+
 	def initialize(j)
 		if j.is_a? Jugada
 			@primera=j
@@ -146,21 +148,42 @@ class Copiar
 		end
 	end
 
-	def prox(j)
+	def prox(j) #j es la jugada anterior del oponente, si se llama de primero j debe ser nil
 		if j.is_a? Jugada
 			if @jugadaAnterior == nil
+				@jugar, @jugadaAnterior = @jugadaAnterior, j
 				return @primera
 			else
-				return @jugadaAnterior
+				@jugar, @jugadaAnterior = @jugadaAnterior, j
+				return @jugar
 			end
 		else
 			raise "Jugada suministrada invalida"
 		end
 	end
 
-	def cambiar_anterior(j)
+end
+
+class Pensar
+
+	attr_reader :piedras, :papeles, :tijeras, :lagartos, :spocks
+
+	def initialize
+		#Jugadas del oponente con # de veces jugadas
+		@piedras=0
+		@papeles=0
+		@tijeras=0
+		@lagartos=0
+		@spocks=0
+	end
+
+	def prox(j) #j es la jugada anterior del op
 		if j.is_a? Jugada
-			@jugadaAnterior = j
+			if @jugadaAnterior == nil
+				return @primera
+			else
+				return @jugadaAnterior
+			end
 		else
 			raise "Jugada suministrada invalida"
 		end
@@ -187,16 +210,18 @@ jugada = Jugada.new
 for i in 0...ses.sum
 	puts "jugada #{i} #{ses.prox(jugada)}"
 end
-
-#PRUEBA COPIAR
-jugada = Jugada.new
-cop = Copiar.new(Piedra.new)
-puts "jugada inicial #{cop.prox(jugada)}"
-cop.cambiar_anterior(Spock.new)
-puts "jugada #{cop.prox(jugada)}"
-cop.cambiar_anterior(Papel.new)
-puts "jugada #{cop.prox(jugada)}"
-cop.cambiar_anterior(Lagarto.new)
-puts "jugada #{cop.prox(jugada)}"
-puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
 =end
+#PRUEBA COPIAR
+jugada = Piedra.new
+cop = Copiar.new(Piedra.new)
+puts "jugada inicial #{cop.prox(jugada)} y op jugo piedra"
+jugada = Spock.new
+puts "jugada #{cop.prox(jugada)} y op jugo spock"
+jugada = Papel.new
+puts "jugada #{cop.prox(jugada)} y op jugo papel"
+jugada = Lagarto.new
+puts "jugada #{cop.prox(jugada)} y op jugo lagarto"
+puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
+
+
+#PRUEBA PENSAR
