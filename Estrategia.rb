@@ -30,6 +30,7 @@ class Estrategia
 end
 
 class Manual < Estrategia
+
 	def prox(j)
 		if j.is_a? Jugada
 			input = ""
@@ -114,7 +115,7 @@ class Sesgada < Estrategia
 		end
 
 	end
-	#Using this approach https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
+	#Using this approach (second solution) https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
 	def prox(j)
 		if j.is_a? Jugada
 			n=rand(@sum)
@@ -124,6 +125,42 @@ class Sesgada < Estrategia
 					return sym_to_class(jug)
 				end
 			end
+		else
+			raise "Jugada suministrada invalida"
+		end
+	end
+
+end
+
+class Copiar
+
+	attr_reader :primera, :jugadaAnterior
+
+	@jugadaAnterior #No me parece necesario tomar en cuenta todas las jugadas anteriores
+	@primera
+	def initialize(j)
+		if j.is_a? Jugada
+			@primera=j
+		else
+			raise "Jugada suministrada invalida"
+		end
+	end
+
+	def prox(j)
+		if j.is_a? Jugada
+			if @jugadaAnterior == nil
+				return @primera
+			else
+				return @jugadaAnterior
+			end
+		else
+			raise "Jugada suministrada invalida"
+		end
+	end
+
+	def cambiar_anterior(j)
+		if j.is_a? Jugada
+			@jugadaAnterior = j
 		else
 			raise "Jugada suministrada invalida"
 		end
@@ -150,5 +187,16 @@ jugada = Jugada.new
 for i in 0...ses.sum
 	puts "jugada #{i} #{ses.prox(jugada)}"
 end
-=end
+
 #PRUEBA COPIAR
+jugada = Jugada.new
+cop = Copiar.new(Piedra.new)
+puts "jugada inicial #{cop.prox(jugada)}"
+cop.cambiar_anterior(Spock.new)
+puts "jugada #{cop.prox(jugada)}"
+cop.cambiar_anterior(Papel.new)
+puts "jugada #{cop.prox(jugada)}"
+cop.cambiar_anterior(Lagarto.new)
+puts "jugada #{cop.prox(jugada)}"
+puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
+=end
