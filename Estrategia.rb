@@ -37,19 +37,19 @@ class Manual < Estrategia
 			end
 			case input
 			when "1"
-				puts "Ha seleccionado Piedra."
+				#puts "Ha seleccionado Piedra."
 				return Piedra.new
 			when "2"
-				puts "Ha seleccionado Papel."
+				#puts "Ha seleccionado Papel."
 				return Papel.new
 			when "3"
-				puts "Ha seleccionado Tijera."
+				#puts "Ha seleccionado Tijera."
 				return Tijera.new
 			when "4"
-				puts "Ha seleccionado Lagarto."
+				#puts "Ha seleccionado Lagarto."
 				return Lagarto.new
 			when "5"
-				puts "Ha seleccionado Spock."
+				#puts "Ha seleccionado Spock."
 				return Spock.new
 			end
 		else

@@ -34,34 +34,36 @@ class Partida
 		end
 		ronditas=0
 		proxs=Array.new(2)
-		until ronditas>n do
+		until ronditas>=n do
 			if @total_rondas == 0 #Primera ronda de la partida
 				i=0
 				@jugadores.each do |nom, est|
-					if @jugadores[nom].class == Copiar || @jugadores[nom].class == Pensar
-						proxs[i]=@jugadores[nom].prox(@jugadores[nom].primera)
+					if est.class == Copiar || est.class == Pensar
+						proxs[i]=est.prox(est.primera)
 					else
-						proxs[i]=@jugadores[nom].prox(Jugada.new)
+						proxs[i]=est.prox(Jugada.new)
 					end
+					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
 					i+=1
 				end
 				
 			else
 				i=0
 				ants=proxs #Para poder usar la jugada anterior del contrincante
-				@jugadores.each do |nom|
-					proxs[i]=@jugadores[nom].prox(ants[(i+1)%ants.length])
+				@jugadores.each do |nom, est|
+					proxs[i]=est.prox(ants[(i+1)%ants.length])
+					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
 					i+=1
 				end
 			end
 			#Calcula el puntaje [j1,j2]
 			ptos_ronda=proxs[0].puntos(proxs[1])
 			i=0
-			@puntaje.each do |nom|
-				@puntaje[nom]+=ptos_ronda[i]
+			@puntaje.each do |nom,pt|
+				@puntaje[nom]=pt+ptos_ronda[i]
 				i+=1
 			end
-			puts "Al final de la rondita #{rondita} (total: #{@total_rondas}) el puntaje es #{@puntaje}"
+			puts "Al final de la rondita #{ronditas} (total: #{@total_rondas}) el puntaje es #{@puntaje}"
 			ronditas+=1
 			@total_rondas+=1
 		end
@@ -71,6 +73,44 @@ class Partida
 		if n<=0
 			raise "No es posible alcanzar #{n} puntos."
 		end
+
+		terminado=false
+		while !terminado do
+			if @total_rondas == 0 #Primera ronda de la partida
+				i=0
+				@jugadores.each do |nom, est|
+					if est.class == Copiar || est.class == Pensar
+						proxs[i]=est.prox(est.primera)
+					else
+						proxs[i]=est.prox(Jugada.new)
+					end
+					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
+					i+=1
+				end
+				
+			else
+				i=0
+				ants=proxs #Para poder usar la jugada anterior del contrincante
+				@jugadores.each do |nom, est|
+					proxs[i]=est.prox(ants[(i+1)%ants.length])
+					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
+					i+=1
+				end
+			end
+			#Calcula el puntaje [j1,j2]
+			ptos_ronda=proxs[0].puntos(proxs[1])
+			i=0
+			@puntaje.each do |nom,pt|
+				@puntaje[nom]=pt+ptos_ronda[i]
+				i+=1
+				if @puntaje[nom]==n
+					terminado=true
+				end
+			end
+			puts "El puntaje es #{@puntaje} (total: #{@total_rondas})."
+			@total_rondas+=1
+		end
+
 	end
 
 	def reiniciar
@@ -82,5 +122,7 @@ class Partida
 
 end
 
-par = Partida.new({:Yo => Manual.new, :AlterEgo => Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})})
+#par = Partida.new({:Yo => Manual.new, :AlterEgo => Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})})
+par = Partida.new({:Yo => Manual.new, :AlterEgo => Manual.new})
 puts "Inicialmente en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
+par.rondas(2)
