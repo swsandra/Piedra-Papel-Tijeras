@@ -315,7 +315,7 @@ puts "jugada #{cop.prox(jugada)} y op juega lagarto"
 jugada = Lagarto.new
 puts "jugada #{cop.prox(jugada)} y op juega x cosa"
 puts "#{cop}"
-=end
+
 #PRUEBA PENSAR
 pen = Pensar.new
 puts "op juega Papel, jugada inicial #{pen.prox(pen.primera)}"
@@ -327,3 +327,4 @@ puts "op juega x cosa, jugada #{pen.prox(Spock.new)}"
 puts "#{pen}"
 pen.reset
 puts "#{pen}"
+=end
