@@ -147,7 +147,7 @@ end
 
 class Copiar < Estrategia
 
-	attr_reader :primera, :jugadaAnterior
+	attr_reader :primera
 
 	@primera
 
@@ -176,7 +176,7 @@ end
 
 class Pensar < Estrategia
 
-	attr_reader :piedras, :papeles, :tijeras, :lagartos, :spocks
+	attr_reader :piedras, :papeles, :tijeras, :lagartos, :spocks, :primera
 
 	def initialize
 		#Jugadas del oponente con # de veces jugadas
@@ -185,35 +185,40 @@ class Pensar < Estrategia
 		@tijeras=0
 		@lagartos=0
 		@spocks=0
+		@primera=Piedra.new
 	end
 
 	def prox(j) #j es la jugada anterior del op
 		if j.is_a? Jugada
-			if j.class == Piedra
-				@piedras+=1
-			elsif j.class == Papel
-				@papeles+=1
-			elsif j.class == Tijera
-				@tijeras+=1
-			elsif j.class == Lagarto
-				@lagartos+=1
-			elsif j.class == Spock
-				@spocks+=1
-			end
-			#Generate random number
-			random = @@r.rand(@piedras+@papeles+@tijeras+@lagartos+@spocks)
-			puts "random was #{random} "
-			case random
-			when 0...@piedras
-				return Piedra.new
-			when @piedras...@piedras+@papeles
-				return Papel.new
-			when @piedras+@papeles...@piedras+@papeles+@tijeras
-				return Tijera.new
-			when @piedras+@papeles+@tijeras...@piedras+@papeles+@tijeras+@lagartos
-				return Lagarto.new
-			when @piedras+@papeles+@tijeras+@lagartos...@piedras+@papeles+@tijeras+@lagartos+@spocks
-				return Spock.new
+			if !(@primera.equal? j)
+				if j.class == Piedra
+					@piedras+=1
+				elsif j.class == Papel
+					@papeles+=1
+				elsif j.class == Tijera
+					@tijeras+=1
+				elsif j.class == Lagarto
+					@lagartos+=1
+				elsif j.class == Spock
+					@spocks+=1
+				end
+				#Generate random number
+				random = @@r.rand(@piedras+@papeles+@tijeras+@lagartos+@spocks)
+				puts "random was #{random} "
+				case random
+				when 0...@piedras
+					return Piedra.new
+				when @piedras...@piedras+@papeles
+					return Papel.new
+				when @piedras+@papeles...@piedras+@papeles+@tijeras
+					return Tijera.new
+				when @piedras+@papeles+@tijeras...@piedras+@papeles+@tijeras+@lagartos
+					return Lagarto.new
+				when @piedras+@papeles+@tijeras+@lagartos...@piedras+@papeles+@tijeras+@lagartos+@spocks
+					return Spock.new
+				end
+			else
+				return @primera
 			end
 
 		else
@@ -302,7 +307,7 @@ puts "#{ses}"
 #PRUEBA COPIAR
 inicial = Papel.new
 cop = Copiar.new(inicial)
-puts "jugada inicial #{cop.prox(inicial)} y op juega spock"
+puts "jugada inicial #{cop.prox(cop.primera)} y op juega spock"
 jugada = Spock.new
 puts "jugada #{cop.prox(jugada)} y op juega papel"
 jugada = Papel.new
@@ -310,15 +315,15 @@ puts "jugada #{cop.prox(jugada)} y op juega lagarto"
 jugada = Lagarto.new
 puts "jugada #{cop.prox(jugada)} y op juega x cosa"
 puts "#{cop}"
-
+=end
 #PRUEBA PENSAR
 pen = Pensar.new
-puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
-puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
-puts "op jugo Piedra, jugada #{pen.prox(Piedra.new)}"
-puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
-puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
+puts "op juega Papel, jugada inicial #{pen.prox(pen.primera)}"
+puts "op juega Papel, jugada #{pen.prox(Papel.new)}"
+puts "op juega Piedra, jugada #{pen.prox(Papel.new)}"
+puts "op juega Spock, jugada #{pen.prox(Piedra.new)}"
+puts "op juega Spock, jugada #{pen.prox(Spock.new)}"
+puts "op juega x cosa, jugada #{pen.prox(Spock.new)}"
 puts "#{pen}"
 pen.reset
 puts "#{pen}"
-=end
