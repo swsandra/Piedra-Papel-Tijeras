@@ -32,9 +32,9 @@ class Partida
 		if n<=0
 			raise "No es posible completar #{n} partidas."
 		end
-		ronditas=0
+		ronditas=1
 		proxs=Array.new(2)
-		until ronditas>=n do
+		until ronditas>n do
 			if @total_rondas == 0 #Primera ronda de la partida
 				i=0
 				@jugadores.each do |nom, est|
@@ -114,8 +114,8 @@ class Partida
 	end
 
 	def reiniciar
-		@rondas=0
-		@puntaje.each do |jug|
+		@total_rondas=0
+		@puntaje.each do |jug,pt|
 			@puntaje[jug]=0
 		end
 	end
@@ -124,5 +124,8 @@ end
 
 #par = Partida.new({:Yo => Manual.new, :AlterEgo => Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})})
 par = Partida.new({:Yo => Manual.new, :AlterEgo => Manual.new})
-puts "Inicialmente en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
+puts "Inicialmente, en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
 par.rondas(2)
+puts "En la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
+par.reiniciar
+puts "Luego de reiniciar, en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
