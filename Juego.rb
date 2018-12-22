@@ -63,7 +63,7 @@ class Partida
 				@puntaje[nom]=pt+ptos_ronda[i]
 				i+=1
 			end
-			puts "Al final de la rondita #{ronditas} (total: #{@total_rondas}) el puntaje es #{@puntaje}"
+			puts "Al final de la rondita #{ronditas} (total de rondas: #{@total_rondas}) el puntaje es #{@puntaje}"
 			ronditas+=1
 			@total_rondas+=1
 		end
@@ -73,7 +73,7 @@ class Partida
 		if n<=0
 			raise "No es posible alcanzar #{n} puntos."
 		end
-
+		proxs=Array.new(2)
 		terminado=false
 		while !terminado do
 			if @total_rondas == 0 #Primera ronda de la partida
@@ -107,7 +107,7 @@ class Partida
 					terminado=true
 				end
 			end
-			puts "El puntaje es #{@puntaje} (total: #{@total_rondas})."
+			puts "El puntaje es #{@puntaje} y se deben alcanzar #{n} puntos (total de rondas: #{@total_rondas})."
 			@total_rondas+=1
 		end
 
@@ -125,7 +125,7 @@ end
 #par = Partida.new({:Yo => Manual.new, :AlterEgo => Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})})
 par = Partida.new({:Yo => Manual.new, :AlterEgo => Manual.new})
 puts "Inicialmente, en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
-par.rondas(2)
+par.alcanzar(2)
 puts "En la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
 par.reiniciar
 puts "Luego de reiniciar, en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
