@@ -19,7 +19,7 @@ class Jugada
 				return [1, 0]
 			end
 		else
-			puts "Jugada invalida"
+			raise "#{j} no es una jugada valida."
 		end
 	end
 end
