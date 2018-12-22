@@ -149,9 +149,7 @@ class Copiar < Estrategia
 
 	attr_reader :primera, :jugadaAnterior
 
-	@jugadaAnterior #No me parece necesario tomar en cuenta todas las jugadas anteriores
 	@primera
-	@jugar #Siguiente a jugar
 
 	def initialize(j)
 		if j.is_a? Jugada
@@ -161,30 +159,17 @@ class Copiar < Estrategia
 		end
 	end
 
-	def prox(j) #j es la jugada anterior del oponente, si se llama de primero j debe ser nil
+	def prox(j)
 		if j.is_a? Jugada
-			if @jugadaAnterior == nil
-				@jugadaAnterior = j
-				return @primera
-			else
-				@jugar, @jugadaAnterior = @jugadaAnterior, j
-				return @jugar
-			end
+			return j
 		else
 			raise "#{j} no es una jugada valida."
 		end
 	end
 
 	def to_s
-		if @jugadaAnterior!=nil
-			"#{self.class.name} con configuracion:\n Jugada inicial: #{@primera}\n Jugada copiada: #{@jugadaAnterior}\n"
-		else 
-			"#{self.class.name} con configuracion:\n Jugada inicial: #{@primera}\n Jugada copiada: ninguna\n"
-		end
-	end
+		"#{self.class.name} con configuracion:\n Jugada inicial: #{@primera}\n"
 
-	def reset
-		@jugadaAnterior=nil #No hace falta resetear la otra
 	end
 
 end
@@ -296,7 +281,7 @@ end
 manual = Manual.new
 manual.prox(Jugada.new)
 puts "#{manual}"
-=end
+
 #PRUEBA UNIFORME
 uni = Uniforme.new([:Piedra, :Piedra, :Papel, :Tijera, :Tijera])
 #uni1 = Uniforme.new([:hola]) #da error, igual que con una lista vacia
@@ -304,7 +289,7 @@ puts "#{uni.jugadas}"
 proximaj = uni.prox(Jugada.new)
 puts "proximaj #{proximaj} clase #{proximaj.class}"
 puts " #{uni} "
-=begin
+
 #PRUEBA SESGADA
 ses = Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})
 puts "ses #{ses.jugadas}, sum #{ses.sum}, intervals #{ses.intervals}"
@@ -315,18 +300,15 @@ end
 puts "#{ses}"
 
 #PRUEBA COPIAR
-jugada = Piedra.new
-cop = Copiar.new(Piedra.new)
-puts "jugada inicial #{cop.prox(jugada)} y op jugo piedra"
+inicial = Papel.new
+cop = Copiar.new(inicial)
+puts "jugada inicial #{cop.prox(inicial)} y op juega spock"
 jugada = Spock.new
-puts "jugada #{cop.prox(jugada)} y op jugo spock"
+puts "jugada #{cop.prox(jugada)} y op juega papel"
 jugada = Papel.new
-puts "jugada #{cop.prox(jugada)} y op jugo papel"
+puts "jugada #{cop.prox(jugada)} y op juega lagarto"
 jugada = Lagarto.new
-puts "jugada #{cop.prox(jugada)} y op jugo lagarto"
-puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
-puts "#{cop}"
-cop.reset
+puts "jugada #{cop.prox(jugada)} y op juega x cosa"
 puts "#{cop}"
 
 #PRUEBA PENSAR
