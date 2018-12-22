@@ -1,6 +1,5 @@
 ##
 # Clase que representa una jugada de Piedra, Papel, Tijera, Lagarto, Spock.
-
 class Jugada
 
 	##
@@ -19,11 +18,11 @@ class Jugada
 	# Método que dada una jugada +j+ determina los puntos en relación a 
 	# la instancia Jugada sobre la cual es llamada:
 	#
-	# Empate es [0,0]
+	# Empatar retorna [0,0]
 	#
-	# Gana es [1,0]
+	# Ganar retorna [1,0]
 	#
-	# Pierde es [0,1]
+	# Perder retorna [0,1]
 	#
 	# En caso de que +j+ no sea una jugada válida, se genera una excepción.
 

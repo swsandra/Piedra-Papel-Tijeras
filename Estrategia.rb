@@ -1,15 +1,32 @@
 require_relative 'Jugadas'
 require 'io/console'
 
+##
+# Clase que representa una Estrategia que se puede
+# realizar durante una partida.
 class Estrategia
 
-	@@r = Random.new(42) #With this seed it generates the same numbers for Sesgada.prox
-	#@@r = Random.new
+	##
+	# Atributo de clase que contiene una instancia
+	# de Random con semilla +42+ para la generación
+	# de números aleatorios en sus subclases.
+	attr_reader :r
 
+	@@r = Random.new(42) # With this seed it generates the same numbers for Sesgada.prox
+
+	##
+	# Método que retorna la representación en string de una Estrategia.
 	def to_s
 		"#{self.class.name}"
 	end
 
+	##
+	# Método que dado un símbolo +sym+, retorna una instancia
+	# de Jugada correspondiente a la clase cuyo nombre es
+	# igual al de +sym+.
+	#
+	# Se asume que +sym+ solo puede corresponder a un nombre
+	# de alguna de las subclases de Jugada.
 	def sym_to_class(sym)
 		if sym==:Piedra
 			return Piedra.new
@@ -26,8 +43,19 @@ class Estrategia
 
 end
 
+##
+# Clase que representa una Estrategia de tipo Manual, la cual
+# consiste en que el usuario selecciona la siguiente jugada
+# a realizar.
 class Manual < Estrategia
 
+	##
+	# Método que determina la próxima jugada a realizar.
+	#
+	# El parámetro +j+ representa la jugada anterior del
+	# oponente. Para esta Estrategia, dicha información no
+	# es necesaria, sin embargo en caso de que se suministre
+	# una +j+ que no sea de tipo Jugada, se genera una excepción.
 	def prox(j)
 		if j.is_a? Jugada
 			input = ""
@@ -60,11 +88,28 @@ class Manual < Estrategia
 
 end
 
+##
+# Clase que representa una Estrategia de tipo Uniforme, la cual
+# consiste en seleccionar una Jugada de un arreglo usando
+# una distribución uniforme sobre los movimientos posibles.
 class Uniforme < Estrategia
 
+	##
+	# Arreglo que posee símbolos cuyos nombres son únicos y
+	# corresponden a las jugadas que se pueden realizar.
 	attr_reader :jugadas
 
-	#Esta distr, la prob es de 1/n para c/movimiento
+	##
+	# Método que inicializa una Estrategia de tipo
+	# Uniforme.
+	#
+	# El parámetro +moves+ es un arreglo de símbolos
+	# con las jugadas posibles.
+	#
+	# Si +moves+ es un arreglo vacío, se genera una excepción.
+	# En caso de que algún símbolo de +moves+ no
+	# corresponda a un nombre de una subclase de Jugada,
+	# también se genera una excepción.
 	def initialize(moves)
 		if moves.length > 0
 			moves.each do |mov|
@@ -78,6 +123,13 @@ class Uniforme < Estrategia
 		@jugadas = moves.uniq#{|mov| [mov.class]} #esto es cuando son instancias
 	end
 
+	##
+	# Método que determina la próxima jugada a realizar.
+	#
+	# El parámetro +j+ representa la jugada anterior del
+	# oponente. Para esta Estrategia, dicha información no
+	# es necesaria, sin embargo en caso de que se suministre
+	# una +j+ que no sea de tipo Jugada, se genera una excepción.
 	def prox(j)
 		if j.is_a? Jugada
 			return sym_to_class(@jugadas[@@r.rand(@jugadas.length)])
@@ -86,6 +138,10 @@ class Uniforme < Estrategia
 		end
 	end
 
+	##
+	# Método que retorna la representación en string de una Estrategia
+	# de tipo Uniforme con configuración actual, es decir sus
+	# jugadas posibles.
 	def to_s
 		str="#{self.class.name} con configuracion:\n Jugadas posibles:"
 		@jugadas.each do |j|
@@ -96,14 +152,49 @@ class Uniforme < Estrategia
 
 end
 
+##
+# Clase que representa una Estrategia de tipo Sesgada, la cual
+# consiste en seleccionar una Jugada de un mapa de movimientos
+# posibles con sus probabilidades usando una distribución sesgada.
 class Sesgada < Estrategia
 
-	attr_reader :jugadas, :intervals, :sum
+	##
+	# Mapa que posee símbolos como llaves, cuyos nombres son únicos y
+	# corresponden a las jugadas que se pueden realizar, y enteros como
+	# valores, que corresponden a las probabilidades asociadas a cada
+	# movimiento.
+	attr_reader :jugadas
 
+	##
+	# Mapa que posee símbolos como llaves, cuyos nombres son únicos y
+	# corresponden a las jugadas que se pueden realizar, y enteros como
+	# valores, que corresponden al intervalo dentro del cual se selecciona
+	# una jugada.
+	attr_reader :intervals
+
+	##
+	# Entero que corresponde a la sumatoria de las probabilidades dadas
+	# al crear una instancia de la clase.
+	attr_reader :sum
+
+	##
+	# Método que inicializa una Estrategia de tipo
+	# Sesgada.
+	#
+	# El parámetro +moves+ es un mapa que posee
+	# símbolos como llaves, que corresponden a las
+	# jugadas que se pueden realizar, y enteros como
+	# valores, que corresponden a las probabilidades
+	# de cada jugada.
+	#
+	# Si +moves+ es un mapa vacío, se genera una excepción.
+	# En caso de que alguna llave de +moves+ no
+	# corresponda a un nombre de una subclase de Jugada,
+	# también se genera una excepción.
 	def initialize(moves)
 		@intervals=Hash.new
 		if moves.length > 0
-			moves.each do |mov, prob| #key, value
+			moves.each do |mov, prob|
 				if !(mov.is_a? Symbol) || !([:Piedra, :Papel, :Tijera, :Lagarto, :Spock].include? mov)
 					raise "#{mov} no es una jugada valida."
 				end
@@ -120,7 +211,18 @@ class Sesgada < Estrategia
 
 	end
 	
-	#Using this approach (second solution) https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
+	##
+	# Método que determina la próxima jugada a realizar.
+	#
+	# El parámetro +j+ representa la jugada anterior del
+	# oponente. Para esta Estrategia, dicha información no
+	# es necesaria, sin embargo en caso de que se suministre
+	# una +j+ que no sea de tipo Jugada, se genera una excepción.
+	#
+	# Para escoger una de las jugadas disponibles en el mapa
+	# de acuerdo a la probabilidad, se usó la segunda solución
+	# del siguiente enlace: 
+	# https://softwareengineering.stackexchange.com/questions/150616/get-weighted-random-item
 	def prox(j)
 		if j.is_a? Jugada
 			n=@@r.rand(@sum)
@@ -135,6 +237,10 @@ class Sesgada < Estrategia
 		end
 	end
 
+	##
+	# Método que retorna la representación en string de una Estrategia
+	# de tipo Sesgada con configuración actual, es decir sus
+	# jugadas posibles junto con su probabilidad.
 	def to_s
 		str="#{self.class.name} con configuracion:\n Jugadas posibles:\n"
 		@jugadas.each do |j, p|
@@ -145,12 +251,27 @@ class Sesgada < Estrategia
 
 end
 
+##
+# Clase que representa una Estrategia de tipo Copiar, la cual
+# consiste en realizar la Jugada que jugó el contrincante en la
+# ronda anterior. Únicamente la primera jugada es definida al
+# crearse.
 class Copiar < Estrategia
 
+	##
+	# Atributo de tipo Jugada que corresponde a la primera
+	# jugada realizada por el jugador.
 	attr_reader :primera
 
 	@primera
 
+	##
+	# Método que inicializa una Estrategia de tipo
+	# Copiar.
+	#
+	# El parámetro +j+ corresponde a la jugada inicial.
+	# En caso de que +j+ no sea de tipo Jugada,
+	# se genera una excepción.
 	def initialize(j)
 		if j.is_a? Jugada
 			@primera=j
@@ -159,6 +280,13 @@ class Copiar < Estrategia
 		end
 	end
 
+	##
+	# Método que determina la próxima jugada a realizar.
+	#
+	# El parámetro +j+ representa la jugada anterior del
+	# oponente, que se retorna directamente para este tipo
+	# de Estrategia. En caso de que se suministre una +j+ que
+	# no sea de tipo Jugada, se genera una excepción.
 	def prox(j)
 		if j.is_a? Jugada
 			return j
@@ -167,6 +295,10 @@ class Copiar < Estrategia
 		end
 	end
 
+	##
+	# Método que retorna la representación en string de una Estrategia
+	# de tipo Copiar con configuración actual, es decir la
+	# jugada inicial del jugador.
 	def to_s
 		"#{self.class.name} con configuracion:\n Jugada inicial: #{@primera}\n"
 
@@ -174,12 +306,46 @@ class Copiar < Estrategia
 
 end
 
+##
+# Clase que representa una Estrategia de tipo Pensar, la cual consiste
+# en analizar la frecuencia de las jugadas realizadas por el oponente.
 class Pensar < Estrategia
 
-	attr_reader :piedras, :papeles, :tijeras, :lagartos, :spocks, :primera
+	##
+	# Entero que corresponde al número de veces que el oponente ha
+	# jugado Piedra.
+	attr_reader :piedras
 
+	##
+	# Entero que corresponde al número de veces que el oponente ha
+	# jugado Papel.
+	attr_reader :papeles
+
+	##
+	# Entero que corresponde al número de veces que el oponente ha
+	# jugado Tijera.
+	attr_reader :tijeras
+
+	##
+	# Entero que corresponde al número de veces que el oponente ha
+	# jugado Lagarto.
+	attr_reader :lagartos
+
+	##
+	# Entero que corresponde al número de veces que el oponente ha
+	# jugado Spock.
+	attr_reader :spocks
+
+	##
+	# Atributo de tipo Jugada que corresponde a la primera
+	# jugada realizada por el jugador.
+	# Por defecto, es de tipo Piedra.
+	attr_reader :primera
+
+	##
+	# Método que inicializa una Estrategia de tipo
+	# Pensar.
 	def initialize
-		#Jugadas del oponente con # de veces jugadas
 		@piedras=0
 		@papeles=0
 		@tijeras=0
@@ -188,7 +354,14 @@ class Pensar < Estrategia
 		@primera=Piedra.new
 	end
 
-	def prox(j) #j es la jugada anterior del op
+	##
+	# Método que determina la próxima jugada a realizar.
+	#
+	# El parámetro +j+ representa la jugada anterior del
+	# oponente, que se utiliza para seleccionar la siguiente
+	# jugada a realizar. En caso de que se suministre una +j+ que
+	# no sea de tipo Jugada, se genera una excepción.
+	def prox(j)
 		if j.is_a? Jugada
 			if !(@primera.equal? j)
 				if j.class == Piedra
@@ -226,6 +399,10 @@ class Pensar < Estrategia
 		end
 	end
 
+	##
+	# Método que retorna la representación en string de una Estrategia
+	# de tipo Pensar con configuración actual, es decir el número de
+	# veces que el oponente ha realizado cada una de las jugadas.
 	def to_s
 		str="#{self.class.name} con configuracion:"
 		if @piedras==0 && @papeles==0 && @tijeras==0 && @lagartos==0 && @spocks==0
@@ -271,6 +448,10 @@ class Pensar < Estrategia
 		return str
 	end
 
+	##
+	# Método que lleva una instancia de Pensar a su estado
+	# inicial, es decir que todas las cuentas de las jugadas
+	# se llevan a cero.
 	def reset
 		@piedras=0
 		@papeles=0
