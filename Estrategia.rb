@@ -10,8 +10,6 @@ class Estrategia
 		"#{self.class.name}"
 	end
 
-	# ESPECIALIZAR LOS RESET
-
 	def sym_to_class(sym)
 		if sym==:Piedra
 			return Piedra.new
@@ -55,7 +53,7 @@ class Manual < Estrategia
 				return Spock.new
 			end
 		else
-			raise "Jugada suministrada invalida"
+			raise "#{j} no es una jugada valida."
 		end
 	
 	end
@@ -71,11 +69,11 @@ class Uniforme < Estrategia
 		if moves.length > 0
 			moves.each do |mov|
 				if !(mov.is_a? Symbol) || !([:Piedra, :Papel, :Tijera, :Lagarto, :Spock].include? mov)
-					raise "Alguna jugada de la lista no es valida"
+					raise "#{mov} no es una jugada valida."
 				end
 			end
 		else
-			raise "No existen jugadas en la lista"
+			raise "No existen jugadas en la lista."
 		end
 		@jugadas = moves.uniq#{|mov| [mov.class]} #esto es cuando son instancias
 	end
@@ -84,7 +82,7 @@ class Uniforme < Estrategia
 		if j.is_a? Jugada
 			return sym_to_class(@jugadas[@@r.rand(@jugadas.length)])
 		else
-			raise "Jugada suministrada invalida"
+			raise "#{j} no es una jugada valida."
 		end
 	end
 
@@ -102,17 +100,16 @@ class Sesgada < Estrategia
 
 	attr_reader :jugadas, :intervals, :sum
 
-	#No estoy clara si esto sirve
 	def initialize(moves)
 		@intervals=Hash.new
 		if moves.length > 0
 			moves.each do |mov, prob| #key, value
 				if !(mov.is_a? Symbol) || !([:Piedra, :Papel, :Tijera, :Lagarto, :Spock].include? mov)
-					raise "Alguna jugada del mapa no es valida"
+					raise "#{mov} no es una jugada valida."
 				end
 			end
 		else
-			raise "No existen jugadas en el mapa"
+			raise "No existen jugadas en el mapa."
 		end
 		@jugadas = moves #No hace falta hacer uniq, el hash automaticamente toma el ultimo valor
 		@sum=0
@@ -134,7 +131,7 @@ class Sesgada < Estrategia
 				end
 			end
 		else
-			raise "Jugada suministrada invalida"
+			raise "#{j} no es una jugada valida."
 		end
 	end
 
@@ -160,7 +157,7 @@ class Copiar < Estrategia
 		if j.is_a? Jugada
 			@primera=j
 		else
-			raise "Jugada suministrada invalida"
+			raise "#{j} no es una jugada valida."
 		end
 	end
 
@@ -174,7 +171,7 @@ class Copiar < Estrategia
 				return @jugar
 			end
 		else
-			raise "Jugada suministrada invalida"
+			raise "#{j} no es una jugada valida."
 		end
 	end
 
@@ -235,7 +232,7 @@ class Pensar < Estrategia
 			end
 
 		else
-			raise "Jugada suministrada invalida"
+			raise "#{j} no es una jugada valida."
 		end
 	end
 
@@ -299,15 +296,15 @@ end
 manual = Manual.new
 manual.prox(Jugada.new)
 puts "#{manual}"
-
+=end
 #PRUEBA UNIFORME
 uni = Uniforme.new([:Piedra, :Piedra, :Papel, :Tijera, :Tijera])
-#uni1 = Uniforme.new([]) da error
+#uni1 = Uniforme.new([:hola]) #da error, igual que con una lista vacia
 puts "#{uni.jugadas}"
 proximaj = uni.prox(Jugada.new)
 puts "proximaj #{proximaj} clase #{proximaj.class}"
 puts " #{uni} "
-
+=begin
 #PRUEBA SESGADA
 ses = Sesgada.new({:Piedra => 2, :Papel=>5, :Papel=>3})
 puts "ses #{ses.jugadas}, sum #{ses.sum}, intervals #{ses.intervals}"
@@ -331,7 +328,7 @@ puts "jugada sin cambiar anterior #{cop.prox(jugada)}"
 puts "#{cop}"
 cop.reset
 puts "#{cop}"
-=end
+
 #PRUEBA PENSAR
 pen = Pensar.new
 puts "op jugo Papel, jugada #{pen.prox(Papel.new)}"
@@ -342,3 +339,4 @@ puts "op jugo Spock, jugada #{pen.prox(Spock.new)}"
 puts "#{pen}"
 pen.reset
 puts "#{pen}"
+=end
