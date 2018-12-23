@@ -176,6 +176,9 @@ class Partida
 	# jugador se lleva a cero.
 	def reiniciar
 		@total_rondas=0
+		@jugadores.each do |jug,est|
+			est.reset
+		end
 		@puntaje.each do |jug,pt|
 			@puntaje[jug]=0
 		end

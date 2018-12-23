@@ -21,6 +21,12 @@ class Estrategia
 	end
 
 	##
+	# Método que lleva una instancia de Estrategia a su estado inicial.
+	def reset
+		return
+	end
+
+	##
 	# Método que dado un símbolo +sym+, retorna una instancia
 	# de Jugada correspondiente a la clase cuyo nombre es
 	# igual al de +sym+.
@@ -377,7 +383,7 @@ class Pensar < Estrategia
 				end
 				#Generate random number
 				random = @@r.rand(@piedras+@papeles+@tijeras+@lagartos+@spocks)
-				puts "random was #{random} "
+				#puts "random was #{random} "
 				case random
 				when 0...@piedras
 					return Piedra.new
