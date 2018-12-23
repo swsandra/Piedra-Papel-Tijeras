@@ -451,7 +451,7 @@ class Pensar < Estrategia
 	##
 	# Método que lleva una instancia de Pensar a su estado
 	# inicial, es decir que todas las cuentas de las jugadas
-	# se llevan a cero.
+	# anteriores del oponente se llevan a cero.
 	def reset
 		@piedras=0
 		@papeles=0
