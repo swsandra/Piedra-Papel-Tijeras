@@ -26,6 +26,10 @@ class Partida
 	attr_reader :puntaje
 
 	##
+	# Arreglo que posee las jugadas anteriores de cada jugador.
+	attr_reader :ants
+
+	##
 	# Arreglo que posee las próximas jugadas de cada jugador.
 	attr_reader :proxs
 
@@ -47,6 +51,7 @@ class Partida
 		@total_rondas=0
 		@puntaje=Hash.new
 		@proxs=Array.new(2)
+		@ants=Array.new(2)
 		if play.length == 2
 			play.each do |nom, est| #key, value
 				if !(nom.is_a? Symbol)
@@ -94,9 +99,9 @@ class Partida
 				
 			else
 				i=0
-				ants=@proxs #Para poder usar la jugada anterior del contrincante
+				@ants=@proxs #Para poder usar la jugada anterior del contrincante
 				@jugadores.each do |nom, est|
-					@proxs[i]=est.prox(ants[(i+1)%ants.length])
+					@proxs[i]=est.prox(@ants[(i+1) % @ants.length])
 					puts "El jugador #{nom} ha elegido #{@proxs[i]}\n"
 					i+=1
 				end
@@ -143,9 +148,9 @@ class Partida
 				
 			else
 				i=0
-				ants=@proxs #Para poder usar la jugada anterior del contrincante
+				@ants=@proxs #Para poder usar la jugada anterior del contrincante
 				@jugadores.each do |nom, est|
-					@proxs[i]=est.prox(ants[(i+1)%ants.length])
+					@proxs[i]=est.prox(@ants[(i+1) % @ants.length])
 					puts "El jugador #{nom} ha elegido #{@proxs[i]}\n"
 					i+=1
 				end
