@@ -280,6 +280,7 @@ end
 ##
 # JUEGO
 ##
+partida=Partida.new(jug_est)
 jugar=true
 while jugar do
 	input=""
@@ -287,15 +288,26 @@ while jugar do
 		puts "Introduzca el numero correspondiente a alguna de las siguientes opciones:\n 1. Jugar por rondas.\n 2. Jugar por numero de puntos.\n 3. Reiniciar partida.\n 4. Salir.\n"
 		input = STDIN.getch
 	end
+	n = nil
 	case input
 	when "1" #rondas
-		
+		puts "Introduzca la cantidad de rondas a jugar: "
+		until n.is_a? Integer do
+			n = Integer(gets.chomp) rescue nil
+		end
+		partida.rondas(n)
 	when "2" #alcanzar
-		
+		puts "Introduzca la cantidad de puntos que se deben alcanzar: "
+		until n.is_a? Integer do
+			n = Integer(gets.chomp) rescue nil
+		end
+		partida.alcanzar(n)
 	when "3" #reiniciar
-		
+		partida.reiniciar
+		puts"La partida se ha reiniciado.\n"
 	when "4"
 		jugar=false
+		puts "¡Adios!"
 	end
 
 end
