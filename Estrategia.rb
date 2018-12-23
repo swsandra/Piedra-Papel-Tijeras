@@ -17,7 +17,7 @@ class Estrategia
 	##
 	# Método que retorna la representación en string de una Estrategia.
 	def to_s
-		"#{self.class.name}"
+		"#{self.class.name}."
 	end
 
 	##
@@ -226,7 +226,7 @@ class Sesgada < Estrategia
 	def prox(j)
 		if j.is_a? Jugada
 			n=@@r.rand(@sum)
-			puts "n was #{n}"
+			#puts "n was #{n}"
 			@intervals.each do |jug,prob|
 				if prob>n
 					return sym_to_class(jug)

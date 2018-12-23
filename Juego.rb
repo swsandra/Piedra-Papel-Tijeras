@@ -15,7 +15,7 @@ class Partida
 
 	##
 	# Entero que corresponde al número de rondas totales jugadas
-	# en la partida
+	# en la partida.
 	attr_reader :total_rondas
 
 	##
@@ -24,6 +24,10 @@ class Partida
 	# valores, que corresponden a la puntuación acumulada de cada
 	# jugador.
 	attr_reader :puntaje
+
+	##
+	# Arreglo que posee las próximas jugadas de cada jugador.
+	attr_reader :proxs
 
 	##
 	# Método que inicializa una Partida entre dos jugadores.
@@ -42,6 +46,7 @@ class Partida
 		@jugadores=Hash.new
 		@total_rondas=0
 		@puntaje=Hash.new
+		@proxs=Array.new(2)
 		if play.length == 2
 			play.each do |nom, est| #key, value
 				if !(nom.is_a? Symbol)
@@ -73,38 +78,38 @@ class Partida
 			raise "No es posible completar #{n} partidas. Indique un numero positivo."
 		end
 		ronditas=1
-		proxs=Array.new(2)
+		
 		until ronditas>n do
 			if @total_rondas == 0 #Primera ronda de la partida
 				i=0
 				@jugadores.each do |nom, est|
 					if est.class == Copiar || est.class == Pensar
-						proxs[i]=est.prox(est.primera)
+						@proxs[i]=est.prox(est.primera)
 					else
-						proxs[i]=est.prox(Jugada.new)
+						@proxs[i]=est.prox(Jugada.new)
 					end
-					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
+					puts "El jugador #{nom} ha elegido #{@proxs[i]}\n"
 					i+=1
 				end
 				
 			else
 				i=0
-				ants=proxs #Para poder usar la jugada anterior del contrincante
+				ants=@proxs #Para poder usar la jugada anterior del contrincante
 				@jugadores.each do |nom, est|
-					proxs[i]=est.prox(ants[(i+1)%ants.length])
-					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
+					@proxs[i]=est.prox(ants[(i+1)%ants.length])
+					puts "El jugador #{nom} ha elegido #{@proxs[i]}\n"
 					i+=1
 				end
 			end
 			#Calcula el puntaje [j1,j2]
-			ptos_ronda=proxs[0].puntos(proxs[1])
+			ptos_ronda=@proxs[0].puntos(@proxs[1])
 			i=0
 			@puntaje.each do |nom,pt|
 				@puntaje[nom]=pt+ptos_ronda[i]
 				i+=1
 			end
 			@total_rondas+=1
-			puts "Se han jugado #{ronditas} ronda(s) de #{n} ronda(s) que deben completarse, en un total de #{@total_rondas} ronda(s).\n El puntaje actual es #{@puntaje}\n"
+			puts "Se han jugado #{ronditas} ronda(s) de #{n} ronda(s) que deben completarse, en un total de #{@total_rondas} ronda(s).\n El puntaje actual es #{@puntaje}\n\n"
 			ronditas+=1
 		end
 	end
@@ -122,42 +127,41 @@ class Partida
 		if n<=0
 			raise "No es posible alcanzar #{n} puntos. Indique un numero positivo."
 		end
-		proxs=Array.new(2)
 		terminado=false
 		while !terminado do
 			if @total_rondas == 0 #Primera ronda de la partida
 				i=0
 				@jugadores.each do |nom, est|
 					if est.class == Copiar || est.class == Pensar
-						proxs[i]=est.prox(est.primera)
+						@proxs[i]=est.prox(est.primera)
 					else
-						proxs[i]=est.prox(Jugada.new)
+						@proxs[i]=est.prox(Jugada.new)
 					end
-					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
+					puts "El jugador #{nom} ha elegido #{@proxs[i]}\n"
 					i+=1
 				end
 				
 			else
 				i=0
-				ants=proxs #Para poder usar la jugada anterior del contrincante
+				ants=@proxs #Para poder usar la jugada anterior del contrincante
 				@jugadores.each do |nom, est|
-					proxs[i]=est.prox(ants[(i+1)%ants.length])
-					puts "El jugador #{nom} ha elegido #{proxs[i]}\n"
+					@proxs[i]=est.prox(ants[(i+1)%ants.length])
+					puts "El jugador #{nom} ha elegido #{@proxs[i]}\n"
 					i+=1
 				end
 			end
 			#Calcula el puntaje [j1,j2]
-			ptos_ronda=proxs[0].puntos(proxs[1])
+			ptos_ronda=@proxs[0].puntos(@proxs[1])
 			i=0
 			@puntaje.each do |nom,pt|
 				@puntaje[nom]=pt+ptos_ronda[i]
 				i+=1
-				if @puntaje[nom]==n
+				if @puntaje[nom]>=n
 					terminado=true
 				end
 			end
 			@total_rondas+=1
-			puts "Se han jugado un total de #{@total_rondas} ronda(s).\n El puntaje actual es #{@puntaje}\n"
+			puts "Se han jugado un total de #{@total_rondas} ronda(s).\n El puntaje actual es #{@puntaje}\n\n"
 		end
 
 	end
@@ -178,6 +182,7 @@ end
 ##
 # Cliente (Main)
 ##
+
 ##
 #JUGADORES
 ##
@@ -193,7 +198,7 @@ for i in 1..2
 	salir=false #Variable para salir de un loop donde se pregunte por mas de una jugada para una estrategia
 	
 	until ["1","2","3","4","5"].include? est do
-		puts "Introduzca la estrategia del jugador #{i}:\n 1. Manual.\n 2. Uniforme.\n 3. Sesgada.\n 4. Copiar.\n 5. Pensar.\n"
+		puts "Introduzca la estrategia del jugador #{i}:\n 1. Manual.\n 2. Uniforme.\n 3. Sesgada.\n 4. Copiar.\n 5. Pensar.\n\n"
 		est = STDIN.getch
 	end
 
@@ -207,7 +212,7 @@ for i in 1..2
 		while !salir do
 			uni=""
 			until ["1","2","3","4","5","6"].include? uni do
-				puts "Introduzca las jugadas posibles:\n 1. Piedra.\n 2. Papel.\n 3. Tijeras.\n 4. Lagarto.\n 5. Spock.\n 6. Terminar de seleccionar jugadas.\n"
+				puts "Introduzca las jugadas posibles:\n 1. Piedra.\n 2. Papel.\n 3. Tijeras.\n 4. Lagarto.\n 5. Spock.\n 6. Terminar de seleccionar jugadas.\n\n"
 				uni = STDIN.getch
 			end
 			case uni
@@ -237,14 +242,18 @@ for i in 1..2
 		while !salir do
 			ses=""
 			until ["1","2","3","4","5","6"].include? ses do
-				puts "Introduzca las jugadas posibles:\n 1. Piedra.\n 2. Papel.\n 3. Tijeras.\n 4. Lagarto.\n 5. Spock.\n 6. Terminar de seleccionar jugadas.\n"
+				puts "Introduzca las jugadas posibles:\n 1. Piedra.\n 2. Papel.\n 3. Tijeras.\n 4. Lagarto.\n 5. Spock.\n 6. Terminar de seleccionar jugadas.\n\n"
 				ses = STDIN.getch
 			end
-			prob = nil
-			puts "Introduzca la probabilidad: "
-			until prob.is_a? Integer do
-				prob = Integer(gets.chomp) rescue nil
+			
+			if ses!="6"
+				prob = nil
+				puts "Introduzca la probabilidad: "
+				until prob.is_a? Integer do
+					prob = Integer(gets.chomp) rescue nil
+				end
 			end
+
 			case ses
 			when "1" 
 				puts "Ha seleccionado Piedra con probabilidad #{prob}.\n\n"	
@@ -270,7 +279,7 @@ for i in 1..2
 		puts "Ha seleccionado la estrategia copiar.\n\n"
 		cop=""
 		until ["1","2","3","4","5"].include? cop do
-			puts "Introduzca la primera jugada:\n 1. Piedra.\n 2. Papel.\n 3. Tijeras.\n 4. Lagarto.\n 5. Spock.\n"
+			puts "Introduzca la primera jugada:\n 1. Piedra.\n 2. Papel.\n 3. Tijeras.\n 4. Lagarto.\n 5. Spock.\n\n"
 			cop = STDIN.getch
 		end
 		case cop
@@ -304,8 +313,8 @@ partida=Partida.new(jug_est)
 jugar=true
 while jugar do
 	input=""
-	until ["1","2","3","4"].include? input do
-		puts "Introduzca el numero correspondiente a alguna de las siguientes opciones:\n 1. Jugar por rondas.\n 2. Jugar por numero de puntos.\n 3. Reiniciar partida.\n 4. Salir.\n"
+	until ["1","2","3","4","5"].include? input do
+		puts "Introduzca el numero correspondiente a alguna de las siguientes opciones:\n 1. Jugar por rondas.\n 2. Jugar por puntos.\n 3. Reiniciar partida.\n 4. Mostrar jugadores con sus estrategias.\n 5. Salir.\n\n"
 		input = STDIN.getch
 	end
 	n = nil
@@ -315,19 +324,25 @@ while jugar do
 		until n.is_a? Integer do
 			n = Integer(gets.chomp) rescue nil
 		end
+		puts "Ha seleccionado partida por rondas con #{n} rondas.\n\n"
 		partida.rondas(n)
 	when "2" #alcanzar
 		puts "Introduzca la cantidad de puntos que se deben alcanzar: "
 		until n.is_a? Integer do
 			n = Integer(gets.chomp) rescue nil
 		end
+		puts "Ha seleccionado partida por puntos hasta que algun jugador alcance #{n} puntos.\n\n"
 		partida.alcanzar(n)
 	when "3" #reiniciar
 		partida.reiniciar
-		puts"La partida se ha reiniciado.\n"
-	when "4"
+		puts"La partida se ha reiniciado.\n\n"
+	when "4" 
+		partida.jugadores.each do |jug, est|
+			puts "El jugador #{jug} posee la estrategia #{est}\n"
+		end
+	when "5"
 		jugar=false
-		puts "Bye"
+		puts "Bye\n"
 	end
 
 end
