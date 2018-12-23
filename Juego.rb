@@ -199,8 +199,10 @@ for i in 1..2
 
 	case est
 	when "1"
+		puts "Ha seleccionado la estrategia manual.\n\n"
 		jug_est[j1]=Manual.new
 	when "2" #uniforme
+		puts "Ha seleccionado la estrategia uniforme.\n\n"
 		jug = Array.new
 		while !salir do
 			uni=""
@@ -210,14 +212,19 @@ for i in 1..2
 			end
 			case uni
 			when "1" 
+				puts "Ha seleccionado Piedra.\n\n"
 				jug.push(:Piedra)
 			when "2" 
+				puts "Ha seleccionado Papel.\n\n"
 				jug.push(:Papel)
 			when "3" 
+				puts "Ha seleccionado Tijera.\n\n"
 				jug.push(:Tijera)
 			when "4"
+				puts "Ha seleccionado Lagarto.\n\n"
 				jug.push(:Lagarto)
 			when "5"
+				puts "Ha seleccionado Spock.\n\n"
 				jug.push(:Spock)
 			when "6"
 				salir=true
@@ -225,6 +232,7 @@ for i in 1..2
 		end
 		jug_est[j1]=Uniforme.new(jug)
 	when "3" #sesgada
+		puts "Ha seleccionado la estrategia sesgada.\n\n"
 		hash_jug = Hash.new
 		while !salir do
 			ses=""
@@ -238,15 +246,20 @@ for i in 1..2
 				prob = Integer(gets.chomp) rescue nil
 			end
 			case ses
-			when "1" 	
+			when "1" 
+				puts "Ha seleccionado Piedra con probabilidad #{prob}.\n\n"	
 				hash_jug[:Piedra]=prob
 			when "2" 
+				puts "Ha seleccionado Papel con probabilidad #{prob}.\n\n"	
 				hash_jug[:Papel]=prob
 			when "3" 
+				puts "Ha seleccionado Tijera con probabilidad #{prob}.\n\n"	
 				hash_jug[:Tijera]=prob
 			when "4"
+				puts "Ha seleccionado Lagarto con probabilidad #{prob}.\n\n"	
 				hash_jug[:Lagarto]=prob
 			when "5"
+				puts "Ha seleccionado Spock con probabilidad #{prob}.\n\n"	
 				hash_jug[:Spock]=prob
 			when "6"
 				salir=true
@@ -254,6 +267,7 @@ for i in 1..2
 		end
 		jug_est[j1]=Sesgada.new(hash_jug)
 	when "4" #copiar
+		puts "Ha seleccionado la estrategia copiar.\n\n"
 		cop=""
 		until ["1","2","3","4","5"].include? cop do
 			puts "Introduzca la primera jugada:\n 1. Piedra.\n 2. Papel.\n 3. Tijeras.\n 4. Lagarto.\n 5. Spock.\n"
@@ -261,18 +275,24 @@ for i in 1..2
 		end
 		case cop
 		when "1"
+			puts "Ha seleccionado Piedra.\n\n"
 			jug_est[j1]=Copiar.new(Piedra.new)
 		when "2" 
+			puts "Ha seleccionado Papel.\n\n"
 			jug_est[j1]=Copiar.new(Papel.new)
 		when "3" 
+			puts "Ha seleccionado Tijera.\n\n"
 			jug_est[j1]=Copiar.new(Tijera.new)
 		when "4"
+			puts "Ha seleccionado Lagarto.\n\n"
 			jug_est[j1]=Copiar.new(Lagarto.new)
 		when "5"
+			puts "Ha seleccionado Spock.\n\n"
 			jug_est[j1]=Copiar.new(Spock.new)
 		end	
 	
 	when "5"
+		puts "Ha seleccionado la estrategia pensar.\n\n"
 		jug_est[j1]=Pensar.new
 	end
 end
@@ -307,13 +327,7 @@ while jugar do
 		puts"La partida se ha reiniciado.\n"
 	when "4"
 		jugar=false
-		puts "¡Adios!"
+		puts "Bye"
 	end
 
 end
-par = Partida.new({:Yo => Manual.new, :AlterEgo => Manual.new})
-puts "INICIALMENTE en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
-puts "CON RONDAS"
-par.rondas(2)
-par.reiniciar
-puts "Luego de REINICIAR, en la partida #{par.jugadores}\npuntaje #{par.puntaje} en #{par.total_rondas} rondas"
