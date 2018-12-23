@@ -147,13 +147,13 @@ class Partida
 				
 			else
 				i=0
-				@ants=@proxs #Para poder usar la jugada anterior del contrincante
 				@jugadores.each do |nom, est|
 					@proxs[i]=est.prox(@ants[(i+1) % @ants.length])
 					puts "El jugador #{nom} ha elegido #{@proxs[i]}\n"
 					i+=1
 				end
 			end
+			@ants=@proxs.map do |e| e.dup end #Para poder usar la jugada anterior del contrincante
 			#Calcula el puntaje [j1,j2]
 			ptos_ronda=@proxs[0].puntos(@proxs[1])
 			i=0
