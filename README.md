@@ -2,10 +2,12 @@
 ## Piedra, Papel, Tijeras, Lagarto, Spock
 
 Modelado del juego Piedra, Papel, Tijeras, Lagarto, Spock, que permite realizar partidas entre dos jugadores, un jugador y la máquina o dos máquinas. Las jugadas de la máquina se determinan mediante probabilidades o estrategias definidas en el enunciado del proyecto como:
-..* Distribución uniforme.
-..* Sesgada basada en probabilidades de cada jugada.
-..* Copiar jugada anterior.
-..* Pensar (explicada con detalle en el [enunciado](https://github.com/swsandra/Piedra-Papel-Tijeras/blob/master/Enunciado.pdf))
+* Distribución uniforme.
+* Sesgada basada en probabilidades de cada jugada.
+* Copiar jugada anterior.
+* Pensar (explicada con detalle en el [enunciado](https://github.com/swsandra/Piedra-Papel-Tijeras/blob/master/Enunciado.pdf))
+
+Asimismo permite mostrar estadísticas de las partidas.
 
 Autores:
 
