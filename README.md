@@ -1,6 +1,12 @@
 # Proyecto #3: Laboratorio de Lenguajes de Programación I
 ## Piedra, Papel, Tijeras, Lagarto, Spock
 
+Modelado del juego Piedra, Papel, Tijeras, Lagarto, Spock, que permite realizar partidas entre dos jugadores, un jugador y la máquina o dos máquinas. Las jugadas de la máquina se determinan mediante probabilidades o estrategias definidas en el enunciado del proyecto como:
+..* Distribución uniforme.
+..* Sesgada basada en probabilidades de cada jugada.
+..* Copiar jugada anterior.
+..* Pensar (explicada con detalle en el [enunciado](https://github.com/swsandra/Piedra-Papel-Tijeras/blob/master/Enunciado.pdf))
+
 Autores:
 
 * Aurivan Castro (14-10205@usb.ve)
@@ -18,4 +24,4 @@ vez su contrincante haya realizado otro movimiento, por lo que para la estrategi
 ## Documentación
 
 Para generar la documentación se corre en la terminal el comando:
-    rdoc Jugadas.rb Estrategia.rb Juego.rb
+    ```rdoc Jugadas.rb Estrategia.rb Juego.rb```
