@@ -9,6 +9,8 @@ Modelado del juego Piedra, Papel, Tijeras, Lagarto, Spock, que permite realizar 
 
 Asimismo permite mostrar estadísticas de las partidas.
 
+El presente trabajo por medio de la programación en pares.
+
 ### Autores:
 
 * Aurivan Castro (14-10205@usb.ve)
